@@ -2,7 +2,6 @@ const db = require("../db");
 const Sequelize = db.Sequelize;
 const sequelize = db.sequelize;
 const Model = Sequelize.Model;
-const Subscription = require('./subscription');
 class User extends Model{}
 
 User.init({
@@ -23,7 +22,11 @@ User.init({
         }
     },
     tel: Sequelize.INTEGER,
-    country: Sequelize.STRING
+    country: Sequelize.STRING,
+    expiryDate: {
+        type: Sequelize.DATE,
+        allowNull: false
+    }
 },{
     sequelize,
     modelName: 'user'

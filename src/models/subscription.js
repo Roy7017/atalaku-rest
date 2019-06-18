@@ -9,16 +9,16 @@ class Subscripition extends Model{
 }
 
 Subscripition.init({
-    type: {
+    frequency: {
         type: Sequelize.STRING,
-        allowNull: false
-    },
-    expiryDate: {
-        type: Sequelize.DATE,
         allowNull: false
     },
     plan: {
         type: Sequelize.STRING,
+        allowNull: false
+    },
+    amount: {
+        type: Sequelize.DOUBLE,
         allowNull: false
     }
 }, {

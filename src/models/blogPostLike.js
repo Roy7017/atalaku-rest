@@ -8,6 +8,6 @@ BlogPostLike.init({
 
 }, {
     sequelize,
-    modelName: 'blog_post_comment'
+    modelName: 'blog_post_like'
 });
 module.exports = BlogPostLike;

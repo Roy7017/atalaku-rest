@@ -3,8 +3,20 @@ const bodyParser = require('body-parser');
 const path = require('path');
 
 const sequelize = require('./models/sequelize');
-const models = sequelize.models;
 const User = require("./models/user");
+const Subscription = require('./models/subscription');
+const Music = require('./models/music');
+const MusicLike = require('./models/musicLike');
+const MusicComment = require('./models/musicComment');
+const MusicVideo = require('./models/musicVideo');
+const MusicVideoComment = require('./models/musicVideoComment');
+const MusicVideoLike = require('./models/musicVideoLike');
+const BlogPost = require('./models/blogPost');
+const BlogPostComment = require('./models/blogPostComment');
+const BlogPostLike = require('./models/blogPostLike');
+const Movie = require('./models/movie');
+const MovieReview = require('./models/movieReview');
+const Genre = require('./models/genre');
 
 sequelize.authenticate()
     .then(() => {
@@ -17,8 +29,8 @@ sequelize.authenticate()
 const app = express();
 app.get('/', (req, res) => {
     User.findAll()
-        .then(gigs => {
-            console.log(gigs);
+        .then(users => {
+            console.log(users);
             res.sendStatus(200);
         })
         .catch(err => {

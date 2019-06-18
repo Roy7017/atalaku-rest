@@ -49,7 +49,7 @@ MusicVideo.init({
     }
 }, {
     sequelize,
-    modelName: 'music'
+    modelName: 'music_video'
 });
 
 module.exports = MusicVideo;
