@@ -19,6 +19,7 @@ const Movie = require('./movie');
 const MovieReview = require('./movieReview');
 const Genre = require('./genre');
 
+
 //CREATING ASSOCIATIONS
 
 User.belongsTo(Subscription); // ONE TO ONE : subscriptionId goes to User model
@@ -50,100 +51,92 @@ BlogPost.belongsToMany(User, {through: BlogPostLike, as: {singular: 'blogLikeUse
 User.belongsToMany(BlogPost, {through: BlogPostComment, as: {singular: 'blogPostComment', plural: 'blogPostComments'}});
 BlogPost.belongsToMany(User, {through: BlogPostComment, as: {singular: 'blogCommentUser', plural: 'blogCommentUsers'}});
 
-//REGION: Creating tables
-async: Genre.sync();
-async:  Music.sync();
-async:  MusicVideo.sync();
-async:  BlogPost.sync();
-async:  Movie.sync();
-async:  Subscription.sync();
-async:  User.sync();
-async:  MusicLike.sync();
-async:  MusicComment.sync();
-async:  MusicVideoLike.sync();
-async:  MusicVideoComment.sync();
-async:  BlogPostLike.sync();
-async:  BlogPostComment.sync();
-async:  MovieReview.sync();
-//ENDREGION
+
+sequelize.sync().then(() => {
+    //initialize();
+}); 
+//Creates all the tables in database
+//Comment the initialize method to avoid generating additional data
 
 
 //REGION: Creation dummy data and saving
-//Comment or modify this region to either not save or change saved data
-//Tip comment after first run to stop additional redundant data from entering database
-for (let i = 0; i < 5; i++) {
+const initialize = async function() {
+    
+    for (let i = 0; i < 5; i++) {
 
-    //creating subscription instance
-    let sub = Subscription.build({
-        frequency: 'MONTHLY',
-        plan: 'GOLD',
-        amount: 3000
-    });
-
-    //Creating user instance
-    let usr = User.build({
-        username: 'user' + i,
-        password: 'pass' + i,
-        tel: 650990800 + i,
-        email: 'user' + i + '@prampi.com',
-        country: 'CM',
-        expiryDate: new Date('2019-05-' + (1 + i))
-    });
-
-    let movie = Movie.build({
-        title: 'Movie N0.' + i,
-        description: 'A nice movie',
-        rating: 'PG-13',
-        producer: "Mutia"
-    });
-
-    let post = BlogPost.build({
-        title: 'A world begins No.' + i,
-        author: 'Hubert Formin',
-        text: 'I had nothing to write'
-    });
-
-    let music = Music.build({
-        title: 'title' + i,
-        artist: 'artist' + i,
-        album: 'album' + i,
-        year: '201' + i,
-        disc_num: 1
-    });
-
-    let musicVid = MusicVideo.build({
-        title: 'title' + i,
-        artist: 'artist' + i,
-        album: 'album' + i,
-        year: '201' + i,
-        disc_num: 1
-    });
-
-    async: sub.save();
-    async: post.save();
-    async: movie.save();
-    async: music.save();
-    async: musicVid.save();
-    async: usr.save();
-
-    //SUBREGION: Creation associations between instancees in database
-    async: () => {
-        usr.setSubscription(sub);
-        usr.addMovieReview(movie, { 
-            through: {
-                comment: 'nice movie',
-                rating: i
-            }
+        //creating subscription instance
+        let sub = Subscription.build({
+            frequency: 'MONTHLY',
+            plan: 'GOLD',
+            amount: 3000
         });
-        usr.addBlogPostLike(post);
-        usr.addBlogPostComment(post, {through: {commment: 'nice'}});
-        usr.addMusicLike(music);
-        usr.addMusicComment(music, {through: {comment: 'Nice song'}});
-        usr.addVideoLike(musicVid);
-        usr.addVideoComment(musicVid, {through: {comment: 'Nice vid'}});
-    }
-    //ENDSUBREGION
 
+        //Creating user instance
+        let usr = User.build({
+            username: 'user' + i,
+            password: 'pass' + i,
+            tel: 650990800 + i,
+            email: 'user' + i + '@prampi.com',
+            country: 'CM',
+            expiryDate: new Date('2019-05-' + (1 + i))
+        });
+
+        let movie = Movie.build({
+            title: 'Movie N0.' + i,
+            description: 'A nice movie',
+            rating: 'PG-13',
+            producer: "Mutia"
+        });
+
+        let post = BlogPost.build({
+            title: 'A world begins No.' + i,
+            author: 'Hubert Formin',
+            text: 'I had nothing to write'
+        });
+
+        let music = Music.build({
+            title: 'title' + i,
+            artist: 'artist' + i,
+            album: 'album' + i,
+            year: '201' + i,
+            disc_num: 1
+        });
+
+        let musicVid = MusicVideo.build({
+            title: 'title' + i,
+            artist: 'artist' + i,
+            album: 'album' + i,
+            year: '201' + i,
+            disc_num: 1
+        });
+
+        await sub.save();
+        await post.save();
+        await movie.save();
+        await music.save();
+        await musicVid.save();
+        await usr.save();
+        //we wait for all the instances to save first
+        //await forces the promises to finish executing first
+        
+
+        //SUBREGION: Creation associations between instancees in database
+            usr.setSubscription(sub);
+            usr.addMovieReview(movie, { 
+                through: {
+                    comment: 'nice movie',
+                    rating: i
+                }
+            });
+            usr.addBlogPostLike(post);
+            usr.addBlogPostComment(post, {through: {commment: 'nice'}});
+            usr.addMusicLike(music);
+            usr.addMusicComment(music, {through: {comment: 'Nice song'}});
+            usr.addVideoLike(musicVid);
+            usr.addVideoComment(musicVid, {through: {comment: 'Nice vid'}});
+        //ENDSUBREGION
+
+    }
 }
 //ENDREGION
 

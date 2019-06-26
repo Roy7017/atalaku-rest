@@ -27,17 +27,16 @@ sequelize.authenticate()
     });
 
 const app = express();
+app.use(bodyParser.json());
+
+//Users route
+app.use('/users', require('./routes/users'));
+
+//default route
 app.get('/', (req, res) => {
-    User.findAll()
-        .then(users => {
-            console.log(users);
-            res.sendStatus(200);
-        })
-        .catch(err => {
-            console.log(err);
-            res.sendStatus(400);
-        })
+    res.send('ATALAKU REST API');
 });
+
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT,  console.log(`Server started on port ${PORT}`));
