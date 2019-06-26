@@ -2,6 +2,7 @@ const db = require("../db");
 const Sequelize = db.Sequelize;
 const sequelize = db.sequelize;
 const Model = Sequelize.Model;
+
 class BlogPost extends Model{}
 BlogPost.init({
     title:{

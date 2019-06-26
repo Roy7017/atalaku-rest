@@ -18,16 +18,28 @@ const BlogPostLike = require('./blogPostLike');
 const Movie = require('./movie');
 const MovieReview = require('./movieReview');
 const Genre = require('./genre');
+const Admin = require('./admin');
+const Album = require('./album');
 
 
 //CREATING ASSOCIATIONS
 
 User.belongsTo(Subscription); // ONE TO ONE : subscriptionId goes to User model
 
-//ONE TO ONE : genreId goes to other models
-MusicVideo.belongsTo(Genre); 
+//ONE-TO-MANY associations
+Album.hasMany(Music, { as: 'songs'});
+Album.hasMany(MusicVideo, { as: 'videos'});
+
+//ONE TO ONE associations
+MusicVideo.belongsTo(Genre);
+MusicVideo.belongsTo(Admin, { as: 'videoUploader'})
+
 Music.belongsTo(Genre);
+Music.belongsTo(Admin, { as: 'musicUploader'});
+
 Movie.belongsTo(Genre);
+Movie.belongsTo(Admin, { as: 'movieUploader'});
+
 
 //Many-to-many : intermediate tables are used
 User.belongsToMany(Music, {through: MusicLike, as: {singular: 'musicLike', plural: 'musicLikes'}});
@@ -52,8 +64,8 @@ User.belongsToMany(BlogPost, {through: BlogPostComment, as: {singular: 'blogPost
 BlogPost.belongsToMany(User, {through: BlogPostComment, as: {singular: 'blogCommentUser', plural: 'blogCommentUsers'}});
 
 
-sequelize.sync().then(() => {
-    //initialize();
+sequelize.sync({force: true}).then(() => {
+    initialize();
 }); 
 //Creates all the tables in database
 //Comment the initialize method to avoid generating additional data
@@ -61,6 +73,18 @@ sequelize.sync().then(() => {
 
 //REGION: Creation dummy data and saving
 const initialize = async function() {
+
+    let admin = Admin.build({
+        username: 'root',
+        password: 'root',
+    });
+
+    let album = Album.build({
+        name: 'FIRE'
+    });
+
+    await admin.save();
+    await album.save();
     
     for (let i = 0; i < 5; i++) {
 
@@ -110,6 +134,7 @@ const initialize = async function() {
             disc_num: 1
         });
 
+
         await sub.save();
         await post.save();
         await movie.save();
@@ -134,6 +159,13 @@ const initialize = async function() {
             usr.addMusicComment(music, {through: {comment: 'Nice song'}});
             usr.addVideoLike(musicVid);
             usr.addVideoComment(musicVid, {through: {comment: 'Nice vid'}});
+
+            album.addSong(music);
+            album.addVideo(musicVid);
+
+            movie.setMovieUploader(admin);
+            music.setMusicUploader(admin);
+            musicVid.setVideoUploader(admin);
         //ENDSUBREGION
 
     }

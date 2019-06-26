@@ -32,6 +32,24 @@ app.use(bodyParser.json());
 //Users route
 app.use('/users', require('./routes/users'));
 
+//Music route
+app.use('/music', require('./routes/music'));
+
+//Music videos route
+app.use('/music/videos', require('./routes/musicVideos'));
+
+//Movies route
+app.use('/movies', require('./routes/movies'));
+
+//Blog posts routes
+app.use('/posts', require('./routes/blogPost'));
+
+//genre routes
+app.use('/genres', require('./routes/genre'));
+
+//subscriptions route
+app.use('/subscriptions', require('./routes/subscription'));
+
 //default route
 app.get('/', (req, res) => {
     res.send('ATALAKU REST API');

@@ -3,7 +3,7 @@ const router = express.Router();
 const database = require('../db');
 const User = require('../models/user');
 
-//Show all users
+//Read all users
 router.get('/', (req, res) => 
 User.findAll()
 .then(users => {
@@ -12,7 +12,31 @@ User.findAll()
 .catch((err) => console.log(err))
 );
 
-//add a user
+//Read specific users
+router.get('/:id', (req, res) => 
+    User.findOne({
+        where: {
+            id: req.params.id
+        }
+    })
+    .then(user => res.json(user))
+    .catch(err => console.log(err))
+);
+
+//Read users by name
+router.get('/:name', (req, res) => 
+    User.findAll({
+        where: {
+            username: {
+                 [Op.like] : '%'+name+'%'
+            }
+        }
+    })
+    .then(users => res.json(users))
+    .catch(err => console.log(err))
+);
+
+//Create a user
 router.post('/', (req, res) => {
     //Some hard-coded data for a test
     const user = {
@@ -25,7 +49,7 @@ router.post('/', (req, res) => {
     }
 
     //Getting user-specific attrinbutes, we'l have to add some server-side validation
-    let {username, password, tel, email, country, expiryDate} = req;
+    let {username, password, tel, email, country, expiryDate} = req.body;
 
     //Adding info to database
     User.create({
@@ -39,6 +63,34 @@ router.post('/', (req, res) => {
     .then(user => res.json(user)) //we give the added user back as json response
     .catch(err => console.log(err));
 
-})
+});
+
+//Updating a user
+router.put('/:id', (req, res) => {
+
+    // Extracting user variables from request
+    let {username, password, tel, email, country, expiryDate} = req.body;
+
+    User.update({
+        username,
+        password,
+        tel,    
+        email,
+        country, 
+        expiryDate
+    },
+    {
+        where: {
+            id: req.params.id
+        }
+    })
+    .then((count, users) => {
+        console.log(count+' number of users updated');
+        res.json(users);
+    })
+    .catch(err => console.log(err))
+});
+
+
 
 module.exports = router;
