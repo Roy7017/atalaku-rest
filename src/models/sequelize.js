@@ -124,7 +124,6 @@ const initialize = async function() {
         let music = Music.build({
             title: 'title' + i,
             artist: 'artist' + i,
-            album: 'album' + i,
             year: '201' + i,
             disc_num: 1
         });
@@ -132,7 +131,6 @@ const initialize = async function() {
         let musicVid = MusicVideo.build({
             title: 'title' + i,
             artist: 'artist' + i,
-            album: 'album' + i,
             year: '201' + i,
             disc_num: 1
         });

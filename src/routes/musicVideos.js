@@ -6,11 +6,17 @@ const MusicVideo = require('../models/musicVideo');
 const User = require('../models/user');
 
 //Get all music videos
-router.get('/', (req, res) => 
-    MusicVideo.findAll()
+router.get('/', (req, res) => {
+    req.query.offset = req.query.offset ? Number(req.query.offset) : 0;
+    req.query.limit = req.query.limit ? Number(req.query.limit) : 50;
+
+    MusicVideo.findAll({
+        limit: req.query.limit,
+        offset: req.query.offset,
+    })
     .then(videos => res.json(videos))
     .catch(err => console.log(err))
-);
+});
 
 //Get music video by id
 router.get('/:id', (req, res) => 
@@ -24,8 +30,13 @@ router.get('/:id', (req, res) =>
 );
 
 // Get music video by title 
-router.get('/title/:title', (req, res) => 
+router.get('/title/:title', (req, res) => {
+    req.query.offset = req.query.offset ? Number(req.query.offset) : 0;
+    req.query.limit = req.query.limit ? Number(req.query.limit) : 50;
+
     MusicVideo.findAll({
+        limit: req.query.limit,
+        offset: req.query.offset,
         where: {
             title: {
                 [Op.like]: '%'+req.params.title+'%'
@@ -34,33 +45,47 @@ router.get('/title/:title', (req, res) =>
     })
     .then(videos => res.json(videos))
     .catch(err => console.log(err))
-);
+});
 
 // Get music video by artist
-router.get('/artist/:artist', (req, res) => 
+router.get('/artist/:artist', (req, res) => {
+    req.query.offset = req.query.offset ? Number(req.query.offset) : 0;
+    req.query.limit = req.query.limit ? Number(req.query.limit) : 50;
+
     MusicVideo.findAll({
+        limit: req.query.limit,
+        offset: req.query.offset,
         where: {
             artist: '%'+req.params.artist+'%'
         }
     })
     .then(videos => res.json(videos))
     .catch(err => console.log(err))
-);
+});
 
 // Get music video by year
-router.get('/year/:year', (req, res) => 
+router.get('/year/:year', (req, res) => {req.query.offset = req.query.offset ? Number(req.query.offset) : 0;
+    req.query.limit = req.query.limit ? Number(req.query.limit) : 50;
+
     MusicVideo.findAll({
+        limit: req.query.limit,
+        offset: req.query.offset,
         where: {
             year: req.params.year
         }
     })
     .then(videos => res.json(videos))
     .catch(err => console.log(err))
-);
+});
 
 //Get all comments and users for a musicVideo
-router.get('/comments/:id', (req, res) => 
+router.get('/comments/:id', (req, res) => {
+    req.query.offset = req.query.offset ? Number(req.query.offset) : 0;
+    req.query.limit = req.query.limit ? Number(req.query.limit) : 50;
+
     MusicVideo.findOne({
+        limit: req.query.limit,
+        offset: req.query.offset,
         where: {
             id: req.params.id
         },
@@ -71,7 +96,7 @@ router.get('/comments/:id', (req, res) =>
     })
     .then(musicVideo => res.json(musicVideo.videoCommentUsers))
     .catch(err => console.log(err))
-);
+});
 
 //Create a music video
 router.post('/', (req, res) => {

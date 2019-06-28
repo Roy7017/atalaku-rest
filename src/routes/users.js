@@ -5,16 +5,22 @@ const Op = database.Sequelize.Op;
 const User = require('../models/user');
 
 //Read all users
-router.get('/', (req, res) => 
-User.findAll()
-.then(users => {
-    res.json(users);
-})
-.catch((err) => console.log(err))
-);
+router.get('/', (req, res) => {
+    req.query.offset = req.query.offset ? Number(req.query.offset) : 0;
+    req.query.limit = req.query.limit ? Number(req.query.limit) : 50;
+
+    User.findAll({
+        offset: req.query.offset,
+        limit: req.query.limit,
+    })
+    .then(users => {
+        res.json(users);
+    })
+    .catch((err) => console.log(err))
+});
 
 //Read specific users
-router.get('/:id', (req, res) => 
+router.get('/:id', (req, res) => {
     User.findOne({
         where: {
             id: req.params.id
@@ -22,11 +28,16 @@ router.get('/:id', (req, res) =>
     })
     .then(user => res.json(user))
     .catch(err => console.log(err))
-);
+});
 
 //Read users by name
-router.get('/name/:name', (req, res) => 
+router.get('/name/:name', (req, res) => {
+    req.query.offset = req.query.offset ? Number(req.query.offset) : 0;
+    req.query.limit = req.query.limit ? Number(req.query.limit) : 50;
+
     User.findAll({
+        limit: req.query.limit,
+        offset: req.query.offset,
         where: {
             username: {
                  [Op.like] : '%'+req.params.name+'%'
@@ -35,7 +46,7 @@ router.get('/name/:name', (req, res) =>
     })
     .then(users => res.json(users))
     .catch(err => console.log(err))
-);
+});
 
 //Read users by email
 router.get('/email/:email', (req, res) => 

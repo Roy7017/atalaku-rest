@@ -3,13 +3,20 @@ const router = express.Router();
 const database = require('../db');
 const Op = database.Sequelize.Op;
 const Movie = require('../models/movie');
+const User  = require('../models/user');
 
 //Get all movies
-router.get('/', (req, res) => 
-    Movie.findAll()
+router.get('/', (req, res) => {
+    req.query.offset = req.query.offset ? Number(req.query.offset) : 0;
+    req.query.limit = req.query.limit ? Number(req.query.limit) : 50;
+
+    Movie.findAll({
+        limit: req.query.limit,
+        offset: req.query.offset,
+    })
     .then(movies => res.json(movies))
     .catch(err => console.log(err))
-);
+});
 
 //Get movies by id
 router.get('/:id', (req, res) => 
@@ -23,8 +30,13 @@ router.get('/:id', (req, res) =>
 );
 
 //Get movies by title
-router.get('/title/:title', (req, res) => 
+router.get('/title/:title', (req, res) => {
+    req.query.offset = req.query.offset ? Number(req.query.offset) : 0;
+    req.query.limit = req.query.limit ? Number(req.query.limit) : 50;
+
     Movie.findAll({
+        limit: req.query.limit,
+        offset: req.query.offset,
         where: {
             title: {
                 [Op.like]: '%'+req.params.title+'%'
@@ -33,11 +45,16 @@ router.get('/title/:title', (req, res) =>
     })
     .then(movies => res.json(movies))
     .catch(err => console.log(err))
-);
+});
 
 //Get movies by director
-router.get('/director/:director', (req, res) => 
+router.get('/director/:director', (req, res) => {
+    req.query.offset = req.query.offset ? Number(req.query.offset) : 0;
+    req.query.limit = req.query.limit ? Number(req.query.limit) : 50;
+
     Movie.findAll({
+        limit: req.query.limit,
+        offset: req.query.offset,
         where: {
             director: {
                 [Op.like]: '%'+req.params.director+'%'
@@ -46,11 +63,16 @@ router.get('/director/:director', (req, res) =>
     })
     .then(movies => res.json(movies))
     .catch(err => console.log(err))
-);
+});
 
 //Get movies by producer
-router.get('/producer/:producer', (req, res) => 
+router.get('/producer/:producer', (req, res) => {
+    req.query.offset = req.query.offset ? Number(req.query.offset) : 0;
+    req.query.limit = req.query.limit ? Number(req.query.limit) : 50;
+
     Movie.findAll({
+        limit: req.query.limit,
+        offset: req.query.offset,
         where: {
             producer: {
                 [Op.like]: '%'+req.params.producer+'%'
@@ -59,11 +81,16 @@ router.get('/producer/:producer', (req, res) =>
     })
     .then(movies => res.json(movies))
     .catch(err => console.log(err))
-);
+});
 
 //Get movies by writer
-router.get('/writer/:writer', (req, res) => 
+router.get('/writer/:writer', (req, res) => {
+    req.query.offset = req.query.offset ? Number(req.query.offset) : 0;
+    req.query.limit = req.query.limit ? Number(req.query.limit) : 50;
+
     Movie.findAll({
+        limit: req.query.limit,
+        offset: req.query.offset,
         where: {
             writer: {
                 [Op.like]: '%'+req.params.writer+'%'
@@ -72,11 +99,16 @@ router.get('/writer/:writer', (req, res) =>
     })
     .then(movies => res.json(movies))
     .catch(err => console.log(err))
-);
+});
 
 //Get movies by studio
-router.get('/studio/:studio', (req, res) => 
+router.get('/studio/:studio', (req, res) => {
+    req.query.offset = req.query.offset ? Number(req.query.offset) : 0;
+    req.query.limit = req.query.limit ? Number(req.query.limit) : 50;
+
     Movie.findAll({
+        limit: req.query.limit,
+        offset: req.query.offset,
         where: {
             studio: {
                 [Op.like]: '%'+req.params.studio+'%'
@@ -85,7 +117,29 @@ router.get('/studio/:studio', (req, res) =>
     })
     .then(movies => res.json(movies))
     .catch(err => console.log(err))
-);
+});
+
+//Get all reviews and users
+router.get('/reviews/:id', (req, res) => {
+    req.query.offset = req.query.offset ? Number(req.query.offset) : 0;
+    req.query.limit = req.query.limit ? Number(req.query.limit) : 50;
+
+    Movie.findOne({
+        limit: req.query.limit,
+        offset: req.query.offset,
+        where: {
+            id: req.params.id
+        },
+        include: [{
+            model: User,
+            as: 'reviewUsers'
+        }],
+    })
+    .then(movie => {
+        res.json(movie.reviewUsers)
+    })
+    .catch(err => console.log(err));
+})
 
 //Create a movie
 router.post('/', (req, res) => 

@@ -6,13 +6,19 @@ const Music = require('../models/music');
 const User = require('../models/user');
 
 //Get all music 
-router.get('/', (req, res) => 
-    Music.findAll()
+router.get('/', (req, res) => {
+    req.query.offset = req.query.offset ? Number(req.query.offset) : 0;
+    req.query.limit = req.query.limit ? Number(req.query.limit) : 50;
+
+    Music.findAll({
+        limit: req.query.limit,
+        offset: req.query.offset,
+    })
     .then(music => {
         res.json(music);
     })
     .catch(err => console.log(err))
-);
+});
 
 //Get music by id
 router.get('/:id', (req, res) => 
@@ -26,8 +32,13 @@ router.get('/:id', (req, res) =>
 );
 
 // Get music by title 
-router.get('/title/:title', (req, res) => 
+router.get('/title/:title', (req, res) => {
+    req.query.offset = req.query.offset ? Number(req.query.offset) : 0;
+    req.query.limit = req.query.limit ? Number(req.query.limit) : 50;
+
     Music.findAll({
+        limit: req.query.limit,
+        offset: req.query.offset,
         where: {
             title: {
                 [Op.like]: '%'+req.params.title+'%'
@@ -36,39 +47,54 @@ router.get('/title/:title', (req, res) =>
     })
     .then(music => res.json(music))
     .catch(err => console.log(err))
-);
+});
 
 // Get music by artist
-router.get('/artist/:artist', (req, res) => 
+router.get('/artist/:artist', (req, res) => {
+    req.query.offset = req.query.offset ? Number(req.query.offset) : 0;
+    req.query.limit = req.query.limit ? Number(req.query.limit) : 50;
+
     Music.findAll({
+        limit: req.query.limit,
+        offset: req.query.offset,
         where: {
             artist: '%'+req.params.artist+'%'
         },
     })
     .then(music => res.json(music))
     .catch(err => console.log(err))
-);
+});
 
-// Get music by year
-router.get('/year/:year', (req, res) => 
+// Get music by year{
+router.get('/year/:year', (req, res) => {
+    req.query.offset = req.query.offset ? Number(req.query.offset) : 0;
+    req.query.limit = req.query.limit ? Number(req.query.limit) : 50;
+
     Music.findAll({
+        limit: req.query.limit,
+        offset: req.query.offset,
         where: {
             year: req.params.year
         },
     })
     .then(music => res.json(music))
     .catch(err => console.log(err))
-);
+});
 
 //Get all users and their comments for a song
 router.get('/comments/:id', (req, res) => {
+    req.query.offset = req.query.offset ? Number(req.query.offset) : 0;
+    req.query.limit = req.query.limit ? Number(req.query.limit) : 50;
+
     Music.findOne({
+        limit: req.query.limit,
+        offset: req.query.offset,
         where: {
             id: req.params.id
         },
         include: [{
             model: User,
-            as: 'musicCommentUsers'
+            as: 'musicCommentUsers',
         }],
     })
     .then(music => {
