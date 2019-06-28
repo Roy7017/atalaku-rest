@@ -20,6 +20,7 @@ const MovieReview = require('./movieReview');
 const Genre = require('./genre');
 const Admin = require('./admin');
 const Album = require('./album');
+const Documentary = require('./documentary');
 
 
 //CREATING ASSOCIATIONS
@@ -39,6 +40,8 @@ Music.belongsTo(Admin, { as: 'musicUploader'});
 
 Movie.belongsTo(Genre);
 Movie.belongsTo(Admin, { as: 'movieUploader'});
+
+Documentary.belongsTo(Admin, { as: 'documentaryUploader'});
 
 
 //Many-to-many : intermediate tables are used
