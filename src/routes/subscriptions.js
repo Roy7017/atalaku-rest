@@ -11,13 +11,37 @@ router.get('/', (req, res) =>
     .catch(err => console.log(err))
 );
 
+//Get subscriptions by id
+router.get('/:id', (req, res) => 
+    Subscription.findOne({
+        where: {
+            id: req.params.id
+        }
+    })
+    .then(subscription => res.json(subscription))
+    .catch(err => console.log(er))
+);
+
+//Get subscriptions by frequency
 router.get('/frequency/:frequency', (req, res) => 
     Subscription.findAll({
         where: {
             frequency: req.params.frequency
         }
     })
-    .then()
+    .then(subscriptions => res.json(subscriptions))
+    .catch(err => console.log(err))
+);
+
+//Get subscriptions by plan ( name )
+router.get('/name/:name', (req, res) => 
+    Subscription.findAll({
+        where: {
+            plan: req.params.name
+        }
+    })
+    .then(subscriptions => res.json(subscriptions))
+    .catch(err => console.log(err))
 );
 
 module.exports = router;

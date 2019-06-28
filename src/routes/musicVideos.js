@@ -3,6 +3,7 @@ const router = express.Router();
 const database = require('../db');
 const Op = database.Sequelize.Op;
 const MusicVideo = require('../models/musicVideo');
+const User = require('../models/user');
 
 //Get all music videos
 router.get('/', (req, res) => 
@@ -54,6 +55,21 @@ router.get('/year/:year', (req, res) =>
         }
     })
     .then(videos => res.json(videos))
+    .catch(err => console.log(err))
+);
+
+//Get all comments and users for a musicVideo
+router.get('/comments/:id', (req, res) => 
+    MusicVideo.findOne({
+        where: {
+            id: req.params.id
+        },
+        include: [{
+            model: User,
+            as: 'videoCommentUsers'
+        }],
+    })
+    .then(musicVideo => res.json(musicVideo.videoCommentUsers))
     .catch(err => console.log(err))
 );
 

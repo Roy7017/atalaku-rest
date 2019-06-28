@@ -158,9 +158,29 @@ const initialize = async function() {
             });
             usr.addBlogPostLike(post);
             usr.addBlogPostComment(post, {through: {commment: 'nice'}});
-            usr.addMusicLike(music);
+            usr.addMusicLike(music).then(musicLikes => {
+                musicLikes.forEach((musicLike, i) => 
+                    Music.findOne({
+                        where: {
+                            id: musicLike.dataValues.musicId
+                        }
+                    })
+                    .then(music => music.increment('likes', {by: 1}))
+                );
+            });
             usr.addMusicComment(music, {through: {comment: 'Nice song'}});
-            usr.addVideoLike(musicVid);
+            usr.addVideoLike(musicVid)
+                .then(videoLikes => {
+                    videoLikes.forEach((videoLike, i) => 
+                        MusicVideo.findOne({
+                            where: {
+                                id: videoLike.dataValues.musicVideoId
+                            }
+                        })
+                        .then(musicVideo => musicVideo.increment('likes', {by: 1}))
+                        .catch(err => console.log(err))
+                    );
+                });
             usr.addVideoComment(musicVid, {through: {comment: 'Nice vid'}});
 
             album.addSong(music);

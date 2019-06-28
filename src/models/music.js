@@ -20,6 +20,10 @@ Music.init({
             isNumeric: true
         }
     },
+    likes:{
+        type: Sequelize.INTEGER,
+        defaultValue: 0,
+    },
     disc_num: Sequelize.INTEGER,
     composer: Sequelize.STRING,
     album_artist: {
@@ -50,5 +54,6 @@ Music.init({
     sequelize,
     modelName: 'music'
 });
+
 
 module.exports = Music;

@@ -20,6 +20,10 @@ MusicVideo.init({
             isNumeric: true
         }
     },
+    likes:{
+        type: Sequelize.INTEGER,
+        defaultValue: 0,
+    },
     disc_num: Sequelize.INTEGER,
     composer: Sequelize.STRING,
     album_artist: {
