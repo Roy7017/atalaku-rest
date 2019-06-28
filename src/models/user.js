@@ -8,7 +8,7 @@ User.init({
     //attributes
     username: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
     },
     password: {
         type: Sequelize.STRING,

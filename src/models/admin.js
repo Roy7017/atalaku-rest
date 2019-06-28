@@ -14,7 +14,10 @@ Admin.init({
         type: Sequelize.STRING,
         allowNull: false
     },
-    email: Sequelize.STRING,
+    email: {
+        type: Sequelize.STRING,
+        unique: true,
+    }
     permissions: Sequelize.STRING
 },
 {
