@@ -3,11 +3,14 @@ const router = express.Router();
 const database = require('../db');
 const Op = database.Sequelize.Op;
 const Music = require('../models/music');
+const User = require('../models/user');
 
 //Get all music 
 router.get('/', (req, res) => 
     Music.findAll()
-    .then(music => res.json(music))
+    .then(music => {
+        res.json(music);
+    })
     .catch(err => console.log(err))
 );
 
@@ -16,7 +19,7 @@ router.get('/:id', (req, res) =>
     Music.findOne({
         where: {
             id: req.params.id
-        }
+        },
     })
     .then(music => res.json(music))
     .catch(err => console.log(err))
@@ -29,7 +32,7 @@ router.get('/title/:title', (req, res) =>
             title: {
                 [Op.like]: '%'+req.params.title+'%'
             }
-        }
+        },
     })
     .then(music => res.json(music))
     .catch(err => console.log(err))
@@ -40,7 +43,7 @@ router.get('/artist/:artist', (req, res) =>
     Music.findAll({
         where: {
             artist: '%'+req.params.artist+'%'
-        }
+        },
     })
     .then(music => res.json(music))
     .catch(err => console.log(err))
@@ -51,11 +54,31 @@ router.get('/year/:year', (req, res) =>
     Music.findAll({
         where: {
             year: req.params.year
-        }
+        },
     })
     .then(music => res.json(music))
     .catch(err => console.log(err))
 );
+
+//Get all users and their comments for a song
+router.get('/comments/:id', (req, res) => {
+    Music.findOne({
+        where: {
+            id: req.params.id
+        },
+        include: [{
+            model: User,
+            as: 'musicCommentUsers'
+        }],
+    })
+    .then(music => {
+        const users = music.musicCommentUsers;
+        console.log(users);
+        res.json(users);
+    })
+    .catch(err => console.log(err));
+});
+
 
 //Create a song
 router.post('/', (req, res) => {

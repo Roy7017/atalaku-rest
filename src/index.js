@@ -44,7 +44,7 @@ app.use('/users', require('./routes/users'));
 app.use('/music', require('./routes/music'));
 
 //Music videos route
-app.use('/music/videos', require('./routes/musicVideos'));
+app.use('/music_videos', require('./routes/musicVideos'));
 
 //Movies route
 app.use('/movies', require('./routes/movies'));
