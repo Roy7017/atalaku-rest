@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const database = require('../db');
+const Op = database.Sequelize.Op;
 const User = require('../models/user');
 
 //Read all users
@@ -24,12 +25,23 @@ router.get('/:id', (req, res) =>
 );
 
 //Read users by name
-router.get('/:name', (req, res) => 
+router.get('/name/:name', (req, res) => 
     User.findAll({
         where: {
             username: {
-                 [Op.like] : '%'+name+'%'
+                 [Op.like] : '%'+req.params.name+'%'
             }
+        }
+    })
+    .then(users => res.json(users))
+    .catch(err => console.log(err))
+);
+
+//Read users by email
+router.get('/email/:email', (req, res) => 
+    User.findOne({
+        where: {
+            email: req.params.email
         }
     })
     .then(users => res.json(users))
@@ -88,9 +100,18 @@ router.put('/:id', (req, res) => {
         console.log(count+' number of users updated');
         res.json(users);
     })
-    .catch(err => console.log(err))
+    .catch(err => console.log(err));
 });
 
-
+//Delete a user
+router.delete('/:id', (req, res) => 
+    User.destroy({
+        where: {
+            id: req.params.id
+        }
+    })
+    .then(user => res.json(user))
+    .catch(err => console.log(err))
+);
 
 module.exports = router;

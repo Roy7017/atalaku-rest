@@ -1,6 +1,112 @@
 const express = require('express');
 const router = express.Router();
 const database = require('../db');
+const Op = database.Sequelize.Op;
 const Music = require('../models/music');
+
+//Get all music 
+router.get('/', (req, res) => 
+    Music.findAll()
+    .then(music => res.json(music))
+    .catch(err => console.log(err))
+);
+
+//Get music by id
+router.get('/:id', (req, res) => 
+    Music.findOne({
+        where: {
+            id: req.params.id
+        }
+    })
+    .then(music => res.json(music))
+    .catch(err => console.log(err))
+);
+
+// Get music by title 
+router.get('/title/:title', (req, res) => 
+    Music.findAll({
+        where: {
+            title: {
+                [Op.like]: '%'+req.params.title+'%'
+            }
+        }
+    })
+    .then(music => res.json(music))
+    .catch(err => console.log(err))
+);
+
+// Get music by artist
+router.get('/artist/:artist', (req, res) => 
+    Music.findAll({
+        where: {
+            artist: '%'+req.params.artist+'%'
+        }
+    })
+    .then(music => res.json(music))
+    .catch(err => console.log(err))
+);
+
+// Get music by year
+router.get('/year/:year', (req, res) => 
+    Music.findAll({
+        where: {
+            year: req.params.year
+        }
+    })
+    .then(music => res.json(music))
+    .catch(err => console.log(err))
+);
+
+//Create a song
+router.post('/', (req, res) => {
+
+    Music.create({
+        title: req.body.title,
+        artist: req.body.artist,
+        year: req.body.year,
+        disc_num: req.body.disc_num,
+        composer: req.body.composer,
+        album_artist: req.body.album_artist,
+        duration: req.body.duration,
+        cdn_link: req.body.cdn_link,
+        thumbnail_url: req.body.thumbnail_url
+    })
+    .then(music => res.json(music))
+    .catch(err => console.log(err));
+
+});
+
+//Update a song
+router.put('/:id', (req, res) => {
+    Music.update({
+        title: req.body.title,
+        artist: req.body.artist,
+        year: req.body.year,
+        disc_num: req.body.disc_num,
+        composer: req.body.composer,
+        album_artist: req.body.album_artist,
+        duration: req.body.duration,
+        cdn_link: req.body.cdn_link,
+        thumbnail_url: req.body.thumbnail_url
+    },
+    {
+        where: {
+            id: req.params.id
+        }
+    })
+    .then(music => res.json(music))
+    .catch(err => console.log(err));
+});
+
+//Delete a song
+router.delete('/:id', (req, res) => 
+    Music.destroy({
+        where: {
+            id: req.params.id
+        }
+    })
+    .then(music => res.json(music))
+    .catch(err => console.log(err))
+);
 
 module.exports = router;

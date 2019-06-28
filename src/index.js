@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
+//const methodOverride = require('method-override');
 
 const sequelize = require('./models/sequelize');
 const User = require("./models/user");
@@ -27,7 +28,13 @@ sequelize.authenticate()
     });
 
 const app = express();
+app.use((req, res, next) => {
+    res.append('Access-Control-Allow-Origin', ['*']);
+    res.append('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE');
+    res.append('Access-Control-Allow-Headers', 'Content-Type');
+});
 app.use(bodyParser.json());
+//app.use(methodOverride('_method'));
 
 //Users route
 app.use('/users', require('./routes/users'));
@@ -42,13 +49,19 @@ app.use('/music/videos', require('./routes/musicVideos'));
 app.use('/movies', require('./routes/movies'));
 
 //Blog posts routes
-app.use('/posts', require('./routes/blogPost'));
+app.use('/posts', require('./routes/blogPosts'));
 
 //genre routes
-app.use('/genres', require('./routes/genre'));
+app.use('/genres', require('./routes/genres'));
 
 //subscriptions route
-app.use('/subscriptions', require('./routes/subscription'));
+app.use('/subscriptions', require('./routes/subscriptions'));
+
+//admins route
+app.use('/admins', require('./routes/admins'));
+
+//albums route
+app.use('/albums', require('./routes/albums'));
 
 //default route
 app.get('/', (req, res) => {

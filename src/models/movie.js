@@ -16,7 +16,7 @@ Movie.init({
     writer: Sequelize.STRING,
     release_date: Sequelize.DATE,
     studio: Sequelize.STRING,
-    thummnail_url: {
+    thumbnail_url: {
        type: Sequelize.STRING,
         validate:{
            isUrl: true
