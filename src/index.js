@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
-//const methodOverride = require('method-override');
+const methodOverride = require('method-override');
 
 const sequelize = require('./models/sequelize');
 const User = require("./models/user");
@@ -32,9 +32,10 @@ app.use((req, res, next) => {
     res.append('Access-Control-Allow-Origin', ['*']);
     res.append('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE');
     res.append('Access-Control-Allow-Headers', 'Content-Type');
+    next();
 });
 app.use(bodyParser.json());
-//app.use(methodOverride('_method'));
+app.use(methodOverride('_method'));
 
 //Users route
 app.use('/users', require('./routes/users'));
