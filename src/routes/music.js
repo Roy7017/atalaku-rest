@@ -4,6 +4,9 @@ const database = require('../db');
 const Op = database.Sequelize.Op;
 const Music = require('../models/music');
 const User = require('../models/user');
+const Genre = require('../models/genre');
+const Album = require('../models/album');
+const Admin = require('../models/admin');
 
 //Get all music 
 router.get('/', (req, res) => {
@@ -13,6 +16,17 @@ router.get('/', (req, res) => {
     Music.findAll({
         limit: req.query.limit,
         offset: req.query.offset,
+        subQuery:false,
+        include: [{
+            model: Genre,
+        },
+        {
+            model: Album,
+        },
+        {
+            model: Admin,
+            as: 'musicUploader',
+        }]
     })
     .then(music => {
         res.json(music);
@@ -26,6 +40,16 @@ router.get('/:id', (req, res) =>
         where: {
             id: req.params.id
         },
+        include: [{
+            model: Genre,
+        },
+        {
+            model: Album,
+        },
+        {
+            model: Admin,
+            as: 'musicUploader',
+        }]
     })
     .then(music => res.json(music))
     .catch(err => console.log(err))
@@ -39,11 +63,22 @@ router.get('/title/:title', (req, res) => {
     Music.findAll({
         limit: req.query.limit,
         offset: req.query.offset,
+        subQuery: false,
         where: {
             title: {
                 [Op.like]: '%'+req.params.title+'%'
             }
         },
+        include: [{
+            model: Genre,
+        },
+        {
+            model: Album,
+        },
+        {
+            model: Admin,
+            as: 'musicUploader',
+        }]
     })
     .then(music => res.json(music))
     .catch(err => console.log(err))
@@ -57,9 +92,20 @@ router.get('/artist/:artist', (req, res) => {
     Music.findAll({
         limit: req.query.limit,
         offset: req.query.offset,
+        subQuery: false,
         where: {
             artist: '%'+req.params.artist+'%'
         },
+        include: [{
+            model: Genre,
+        },
+        {
+            model: Album,
+        },
+        {
+            model: Admin,
+            as: 'musicUploader',
+        }]
     })
     .then(music => res.json(music))
     .catch(err => console.log(err))
@@ -73,9 +119,20 @@ router.get('/year/:year', (req, res) => {
     Music.findAll({
         limit: req.query.limit,
         offset: req.query.offset,
+        subQuery: false,
         where: {
             year: req.params.year
         },
+        include: [{
+            model: Genre,
+        },
+        {
+            model: Album,
+        },
+        {
+            model: Admin,
+            as: 'musicUploader',
+        }]
     })
     .then(music => res.json(music))
     .catch(err => console.log(err))
@@ -87,14 +144,14 @@ router.get('/comments/:id', (req, res) => {
     req.query.limit = req.query.limit ? Number(req.query.limit) : 50;
 
     Music.findOne({
-        limit: req.query.limit,
-        offset: req.query.offset,
         where: {
             id: req.params.id
         },
         include: [{
             model: User,
             as: 'musicCommentUsers',
+            limit: req.query.limit,
+            offset: req.query.offset,
         }],
     })
     .then(music => {

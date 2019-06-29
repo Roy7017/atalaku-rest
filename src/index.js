@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
+const helmet = require('helmet');
 const methodOverride = require('method-override');
 
 const sequelize = require('./models/sequelize');
@@ -32,8 +33,12 @@ app.use((req, res, next) => {
     res.append('Access-Control-Allow-Origin', ['*']);
     res.append('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE');
     res.append('Access-Control-Allow-Headers', 'Content-Type');
+    if(req.get('authorization') != 'web-atalaku-cm') return res.status(403).json({
+        error: 'Access Denied Fool: You think you can access our api without authentication. You  think we are amateurs??'
+    });
     next();
 });
+app.use(helmet());
 app.use(bodyParser.json());
 app.use(methodOverride('_method'));
 

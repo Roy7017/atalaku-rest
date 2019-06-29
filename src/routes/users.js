@@ -3,6 +3,7 @@ const router = express.Router();
 const database = require('../db');
 const Op = database.Sequelize.Op;
 const User = require('../models/user');
+const Subscription = require('../models/subscription');
 
 //Read all users
 router.get('/', (req, res) => {
@@ -12,6 +13,10 @@ router.get('/', (req, res) => {
     User.findAll({
         offset: req.query.offset,
         limit: req.query.limit,
+        subQuery: false,
+        include: [{
+            model: Subscription
+        }]
     })
     .then(users => {
         res.json(users);
@@ -24,7 +29,10 @@ router.get('/:id', (req, res) => {
     User.findOne({
         where: {
             id: req.params.id
-        }
+        },
+        include: [{
+            model: Subscription,
+        }]
     })
     .then(user => res.json(user))
     .catch(err => console.log(err))
@@ -38,11 +46,15 @@ router.get('/name/:name', (req, res) => {
     User.findAll({
         limit: req.query.limit,
         offset: req.query.offset,
+        subQuery: false,
         where: {
             username: {
                  [Op.like] : '%'+req.params.name+'%'
             }
-        }
+        },
+        include: [{
+            model: Subscription,
+        }]
     })
     .then(users => res.json(users))
     .catch(err => console.log(err))
@@ -53,7 +65,10 @@ router.get('/email/:email', (req, res) =>
     User.findOne({
         where: {
             email: req.params.email
-        }
+        },
+        include: [{
+            model: Subscription
+        }]
     })
     .then(users => res.json(users))
     .catch(err => console.log(err))

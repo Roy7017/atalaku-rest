@@ -8,7 +8,8 @@ Genre.init({
     name:{
         type: Sequelize.STRING,
         allowNull: false
-    }
+    },
+    type: Sequelize.STRING,
 }, {
     sequelize,
     modelName: 'genre'

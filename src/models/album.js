@@ -8,8 +8,28 @@ class Album extends Model{}
 Album.init({
     name: {
         type: Sequelize.STRING,
-        unique: true
-    } 
+        unique: true,
+        allowNull: false,
+    },
+    artist: {
+        type: Sequelize.STRING,
+        allowNull: false,
+    }, 
+    year: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        validate: {
+            len: 4,
+            isNumeric: true
+        }
+    },
+    thumbnail_url: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        validate: {
+            isUrl: true
+        }
+    },
 },
 {
     sequelize, 

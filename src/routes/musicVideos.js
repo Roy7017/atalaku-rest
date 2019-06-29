@@ -4,6 +4,9 @@ const database = require('../db');
 const Op = database.Sequelize.Op;
 const MusicVideo = require('../models/musicVideo');
 const User = require('../models/user');
+const Genre = require('../models/genre');
+const Album = require('../models/album');
+const Admin = require('../models/admin');
 
 //Get all music videos
 router.get('/', (req, res) => {
@@ -13,6 +16,17 @@ router.get('/', (req, res) => {
     MusicVideo.findAll({
         limit: req.query.limit,
         offset: req.query.offset,
+        subQuery: false,
+        include: [{
+            model: Genre,
+        },
+        {
+            model: Album,
+        },
+        {
+            model: Admin,
+            as: 'videoUploader',
+        }]
     })
     .then(videos => res.json(videos))
     .catch(err => console.log(err))
@@ -23,7 +37,17 @@ router.get('/:id', (req, res) =>
     MusicVideo.findOne({
         where: {
             id: req.params.id
-        }
+        },
+        include: [{
+            model: Genre,
+        },
+        {
+            model: Album,
+        },
+        {
+            model: Admin,
+            as: 'videoUploader',
+        }]
     })
     .then(video => res.json(video))
     .catch(err => console.log(err))
@@ -37,11 +61,22 @@ router.get('/title/:title', (req, res) => {
     MusicVideo.findAll({
         limit: req.query.limit,
         offset: req.query.offset,
+        subQuery: false,
         where: {
             title: {
                 [Op.like]: '%'+req.params.title+'%'
             }
-        }
+        },
+        include: [{
+            model: Genre,
+        },
+        {
+            model: Album,
+        },
+        {
+            model: Admin,
+            as: 'videoUploader',
+        }]
     })
     .then(videos => res.json(videos))
     .catch(err => console.log(err))
@@ -55,9 +90,20 @@ router.get('/artist/:artist', (req, res) => {
     MusicVideo.findAll({
         limit: req.query.limit,
         offset: req.query.offset,
+        subQuery: false,
         where: {
             artist: '%'+req.params.artist+'%'
-        }
+        },
+        include: [{
+            model: Genre,
+        },
+        {
+            model: Album,
+        },
+        {
+            model: Admin,
+            as: 'videoUploader',
+        }]
     })
     .then(videos => res.json(videos))
     .catch(err => console.log(err))
@@ -70,9 +116,20 @@ router.get('/year/:year', (req, res) => {req.query.offset = req.query.offset ? N
     MusicVideo.findAll({
         limit: req.query.limit,
         offset: req.query.offset,
+        subQuery: false,
         where: {
             year: req.params.year
-        }
+        },
+        include: [{
+            model: Genre,
+        },
+        {
+            model: Album,
+        },
+        {
+            model: Admin,
+            as: 'videoUploader',
+        }]
     })
     .then(videos => res.json(videos))
     .catch(err => console.log(err))
@@ -84,15 +141,15 @@ router.get('/comments/:id', (req, res) => {
     req.query.limit = req.query.limit ? Number(req.query.limit) : 50;
 
     MusicVideo.findOne({
-        limit: req.query.limit,
-        offset: req.query.offset,
         where: {
             id: req.params.id
         },
         include: [{
             model: User,
-            as: 'videoCommentUsers'
-        }],
+            as: 'videoCommentUsers',
+            limit: req.query.limit,
+            offset: req.query.offset,
+    }],
     })
     .then(musicVideo => res.json(musicVideo.videoCommentUsers))
     .catch(err => console.log(err))

@@ -4,6 +4,8 @@ const database = require('../db');
 const Op = database.Sequelize.Op;
 const Movie = require('../models/movie');
 const User  = require('../models/user');
+const Genre = require('../models/genre');
+const Admin = require('../models/admin');
 
 //Get all movies
 router.get('/', (req, res) => {
@@ -13,6 +15,14 @@ router.get('/', (req, res) => {
     Movie.findAll({
         limit: req.query.limit,
         offset: req.query.offset,
+        subQuery: false,
+        include: [{
+            model: Genre,
+        },
+        {
+            model: Admin,
+            as: 'movieUploader',
+        }]
     })
     .then(movies => res.json(movies))
     .catch(err => console.log(err))
@@ -23,7 +33,14 @@ router.get('/:id', (req, res) =>
     Movie.findOne({
         where: {
             id: req.params.id
-        }
+        },
+        include: [{
+            model: Genre,
+        },
+        {
+            model: Admin,
+            as: 'movieUploader',
+        }]        
     })
     .then(movie => res.json(movie))
     .catch(err => console.log(err))
@@ -37,11 +54,19 @@ router.get('/title/:title', (req, res) => {
     Movie.findAll({
         limit: req.query.limit,
         offset: req.query.offset,
+        subQuery: false,
         where: {
             title: {
                 [Op.like]: '%'+req.params.title+'%'
             }
-        }
+        },
+        include: [{
+            model: Genre,
+        },
+        {
+            model: Admin,
+            as: 'movieUploader',
+        }]
     })
     .then(movies => res.json(movies))
     .catch(err => console.log(err))
@@ -55,11 +80,19 @@ router.get('/director/:director', (req, res) => {
     Movie.findAll({
         limit: req.query.limit,
         offset: req.query.offset,
+        subQuery: false,
         where: {
             director: {
                 [Op.like]: '%'+req.params.director+'%'
             }
-        }
+        },
+        include: [{
+            model: Genre,
+        },
+        {
+            model: Admin,
+            as: 'movieUploader',
+        }]
     })
     .then(movies => res.json(movies))
     .catch(err => console.log(err))
@@ -73,11 +106,19 @@ router.get('/producer/:producer', (req, res) => {
     Movie.findAll({
         limit: req.query.limit,
         offset: req.query.offset,
+        subQuery: false,
         where: {
             producer: {
                 [Op.like]: '%'+req.params.producer+'%'
             }
-        }
+        },
+        include: [{
+            model: Genre,
+        },
+        {
+            model: Admin,
+            as: 'movieUploader',
+        }]
     })
     .then(movies => res.json(movies))
     .catch(err => console.log(err))
@@ -91,11 +132,19 @@ router.get('/writer/:writer', (req, res) => {
     Movie.findAll({
         limit: req.query.limit,
         offset: req.query.offset,
+        subQuery: false,
         where: {
             writer: {
                 [Op.like]: '%'+req.params.writer+'%'
             }
-        }
+        },
+        include: [{
+            model: Genre,
+        },
+        {
+            model: Admin,
+            as: 'movieUploader',
+        }]
     })
     .then(movies => res.json(movies))
     .catch(err => console.log(err))
@@ -109,11 +158,19 @@ router.get('/studio/:studio', (req, res) => {
     Movie.findAll({
         limit: req.query.limit,
         offset: req.query.offset,
+        subQuery: false,
         where: {
             studio: {
                 [Op.like]: '%'+req.params.studio+'%'
             }
-        }
+        },
+        include: [{
+            model: Genre,
+        },
+        {
+            model: Admin,
+            as: 'movieUploader',
+        }]
     })
     .then(movies => res.json(movies))
     .catch(err => console.log(err))
@@ -125,14 +182,14 @@ router.get('/reviews/:id', (req, res) => {
     req.query.limit = req.query.limit ? Number(req.query.limit) : 50;
 
     Movie.findOne({
-        limit: req.query.limit,
-        offset: req.query.offset,
         where: {
             id: req.params.id
         },
         include: [{
             model: User,
-            as: 'reviewUsers'
+            as: 'reviewUsers',
+            limit: req.query.limit,
+            offset: req.query.offset,
         }],
     })
     .then(movie => {

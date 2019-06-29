@@ -29,7 +29,10 @@ User.belongsTo(Subscription); // ONE TO ONE : subscriptionId goes to User model
 
 //ONE-TO-MANY associations
 Album.hasMany(Music, { as: 'songs'});
+Music.belongsTo(Album);
+
 Album.hasMany(MusicVideo, { as: 'videos'});
+MusicVideo.belongsTo(Album);
 
 //ONE TO ONE associations
 MusicVideo.belongsTo(Genre);
@@ -83,11 +86,26 @@ const initialize = async function() {
     });
 
     let album = Album.build({
-        name: 'FIRE'
+        name: 'Album Name',
+        artist: 'Artist',
+        year: '1998',
+        thumbnail_url: 'google.com',
+    });
+
+    let musicGenre = Genre.build({
+        name: 'Hip-Hop',
+        type: 'Music',
+    });
+
+    let movieGenre = Genre.build({
+        name: 'Adventure',
+        type: 'Movie',
     });
 
     await admin.save();
     await album.save();
+    await musicGenre.save();
+    await movieGenre.save();
     
     for (let i = 0; i < 5; i++) {
 
@@ -185,8 +203,13 @@ const initialize = async function() {
             album.addVideo(musicVid);
 
             movie.setMovieUploader(admin);
+            movie.setGenre(movieGenre);
+
             music.setMusicUploader(admin);
+            music.setGenre(musicGenre);
+
             musicVid.setVideoUploader(admin);
+            musicVid.setGenre(musicGenre);
         //ENDSUBREGION
 
     }
