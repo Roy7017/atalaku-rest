@@ -26,9 +26,6 @@ Album.init({
     thumbnail_url: {
         type: Sequelize.STRING,
         allowNull: false,
-        validate: {
-            isUrl: true
-        }
     },
 },
 {

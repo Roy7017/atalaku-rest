@@ -85,12 +85,6 @@ const initialize = async function() {
         password: 'root',
     });
 
-    let album = Album.build({
-        name: 'Album Name',
-        artist: 'Artist',
-        year: '1998',
-        thumbnail_url: 'google.com',
-    });
 
     let musicGenre = Genre.build({
         name: 'Hip-Hop',
@@ -103,7 +97,6 @@ const initialize = async function() {
     });
 
     await admin.save();
-    await album.save();
     await musicGenre.save();
     await movieGenre.save();
     
@@ -141,7 +134,7 @@ const initialize = async function() {
 
         let music = Music.build({
             title: 'title' + i,
-            artist: "['Mr leo', 'Locko']",
+            artist: "Mr leo, Locko",
             album_artist: 'artist' + i,
             year: '201' + i,
             disc_num: 1
@@ -154,6 +147,13 @@ const initialize = async function() {
             disc_num: 1
         });
 
+        let album = Album.build({
+            name: 'Album' + i,
+            artist: 'Artist' + i,
+            year: '201' + i,
+            thumbnail_url: "http://localhost:4200/assets/images/mboko.jpeg",
+        });
+
 
         await sub.save();
         await post.save();
@@ -161,6 +161,7 @@ const initialize = async function() {
         await music.save();
         await musicVid.save();
         await usr.save();
+        await album.save();
         //we wait for all the instances to save first
         //await forces the promises to finish executing first
         
