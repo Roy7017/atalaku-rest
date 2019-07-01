@@ -16,11 +16,12 @@ sequelize.authenticate()
 const app = express();
 app.use((req, res, next) => {
     res.append('Access-Control-Allow-Origin', ['*']);
-    res.append('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE');
-    res.append('Access-Control-Allow-Headers', 'Content-Type');
-    if(req.get('Authorization') != 'web-atalaku-cm') return res.status(403).json({
-        error: 'Access Denied Fool: You think you can access our api without authentication. You  think we are amateurs??'
-    });
+    res.append('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE, OPTIONS');
+    res.append('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    console.log('This is the auth key: '+req.get('Authorization'))
+    // if(req.get('Authorization') != 'web-atalaku-cm') return res.status(401).jsonp(
+    //     'Access Denied Fool: You think you can access our api without authentication. You  think we are amateurs??'
+    // );
     next();
 });
 app.use(helmet());

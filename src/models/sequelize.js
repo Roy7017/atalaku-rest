@@ -141,7 +141,8 @@ const initialize = async function() {
 
         let music = Music.build({
             title: 'title' + i,
-            artist: 'artist' + i,
+            artist: "['Mr leo', 'Locko']",
+            album_artist: 'artist' + i,
             year: '201' + i,
             disc_num: 1
         });
