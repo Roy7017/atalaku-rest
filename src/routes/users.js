@@ -103,7 +103,7 @@ router.post('/', (req, res) => {
     }
 
     //Getting user-specific attrinbutes, we'l have to add some server-side validation
-    let {username, password, tel, email, country, expiryDate} = req.body;
+    const {username, password, tel, email, country, expiryDate, subscription} = req.query;
 
     //Adding info to database
     User.create({
@@ -114,7 +114,13 @@ router.post('/', (req, res) => {
         country,
         expiryDate
     })
-    .then(user => res.json(user)) //we give the added user back as json response
+    .then(async function(user){
+        subcription = await Subscription.findOne({
+            where: {plan: subscription}
+        });
+        user.setSubcription(subscription);
+        res.json(user);
+    }) //we give the added user back as json response
     .catch(err => console.log(err));
 
 });

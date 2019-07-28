@@ -46,4 +46,17 @@ router.get('/username/:username', (req, res) => {
     .catch(err => console.log(err));
 });
 
+router.post('/', (req, res) => {
+    const {username, password, email, permissions} = req.query;
+
+    Admin.create({
+        username, 
+        password,
+        email,
+        permissions
+    })
+    .then(admin => res.json(admin))
+    .catch(err = console.log(err));
+});
+
 module.exports = router;

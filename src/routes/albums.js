@@ -134,4 +134,16 @@ router.get('/year/:year', (req, res) => {
     .catch(err => console.log(err));
 });
 
+router.post('/', (req, res) => {
+    const {name, year, thumbnail_url} = req.query;
+
+    Album.create({
+        name,
+        year,
+        thumbnail_url
+    })
+    .then(album => res.json(album))
+    .catch(err => console.log(err));
+});
+
 module.exports = router;

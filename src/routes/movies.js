@@ -201,17 +201,17 @@ router.get('/reviews/:id', (req, res) => {
 //Create a movie
 router.post('/', (req, res) => 
     Movie.create({
-        title: req.body.title,
-        description: req.body.description, 
-        rating: req.body.rating,
-        director: req.body.director,
-        producer: req.body.producer,
-        writer: req.body.writer,
-        release_date: req.body.release_date,
-        studio: req.body.studio,
-        thumbnail_url: req.body.thumbnail_url,
-        cdn_link: req.body.cdn_link,
-        duration: req.body.duration
+        title: req.query.title,
+        description: req.query.description, 
+        rating: req.query.rating,
+        director: req.query.director,
+        producer: req.query.producer,
+        writer: req.query.writer,
+        release_date: req.query.release_date,
+        studio: req.query.studio,
+        thumbnail_url: req.query.thumbnail_url,
+        cdn_link: req.query.cdn_link,
+        duration: req.query.duration
     })
     .then(movie => res.json(movie))
     .catch(err => console.log(err))

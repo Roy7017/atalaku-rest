@@ -43,10 +43,11 @@ router.put('/:id', (req, res) => {
 
 //Create a genre
 router.post('/', (req, res) => {
-    let { name } = req.body;
+    let { name, type } = req.query;
 
     Genre.create({
-        name
+        name,
+        type
     })
     .then(genre => res.json(genre))
     .catch(err => console.log(err));

@@ -89,4 +89,17 @@ router.get('/comments/:id', (req, res) => {
     .catch(err => console.log(err));
 });
 
+router.post('/', (req, res) => {
+    const {title, author, thumbnail_url, text} = req.query;
+
+    BlogPost.create({
+        title, 
+        author,
+        thumbnail_url,
+        text
+    })
+    .then(blogPost => res.json(blogPost))
+    .catch(err => console.log(err));
+});
+
 module.exports = router;

@@ -244,7 +244,6 @@ const initialize = async function() {
             musicVid.setGenre(musicGenre);
             musicVid.setArtist(mrLeo);
             musicVid.setFeaturedArtists([locko, rickRoss]);
-            console.log(i);
         //ENDSUBREGION
 
     }
