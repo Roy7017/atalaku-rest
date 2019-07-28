@@ -7,15 +7,22 @@ const User = require('../models/user');
 const Genre = require('../models/genre');
 const Album = require('../models/album');
 const Admin = require('../models/admin');
+const Artist = require('../models/artist');
 
 //Get all music 
 router.get('/', (req, res) => {
-    req.query.offset = req.query.offset ? Number(req.query.offset) : 0;
-    req.query.limit = req.query.limit ? Number(req.query.limit) : 50;
+    req.query.offset = req.query.offset ? Number(req.query.offset) : database.DEFAULT_OFFSET;
+    req.query.limit = req.query.limit ? Number(req.query.limit) : database.DEFAULT_LIMIT;
+
+    req.query.sortColumn = req.query.sortColumn ? req.query.sortColumn : database.DEFAULT_SORT_COLUMN;
+    req.query.sortDirection = req.query.sortDirection ? req.query.sortDirection : database.DEFAULT_SORT_DIRECTION;
 
     Music.findAll({
         limit: req.query.limit,
         offset: req.query.offset,
+        order: [
+            [req.query.sortColumn, req.query.sortDirection],
+        ],
         subQuery:false,
         include: [{
             model: Genre,
@@ -57,8 +64,8 @@ router.get('/:id', (req, res) =>
 
 // Get music by title 
 router.get('/title/:title', (req, res) => {
-    req.query.offset = req.query.offset ? Number(req.query.offset) : 0;
-    req.query.limit = req.query.limit ? Number(req.query.limit) : 50;
+    req.query.offset = req.query.offset ? Number(req.query.offset) : database.DEFAULT_OFFSET;
+    req.query.limit = req.query.limit ? Number(req.query.limit) : database.DEFAULT_LIMIT;
 
     Music.findAll({
         limit: req.query.limit,
@@ -86,35 +93,41 @@ router.get('/title/:title', (req, res) => {
 
 // Get music by artist
 router.get('/artist/:artist', (req, res) => {
-    req.query.offset = req.query.offset ? Number(req.query.offset) : 0;
-    req.query.limit = req.query.limit ? Number(req.query.limit) : 50;
+    req.query.offset = req.query.offset ? Number(req.query.offset) : database.DEFAULT_OFFSET;
+    req.query.limit = req.query.limit ? Number(req.query.limit) : database.DEFAULT_LIMIT;
 
-    Music.findAll({
+    Artist.findAll({
         limit: req.query.limit,
         offset: req.query.offset,
         subQuery: false,
         where: {
-            artist: '%'+req.params.artist+'%'
+            name: {
+                [Op.like]: '%'+req.params.artist+'%'
+            }
         },
         include: [{
-            model: Genre,
-        },
-        {
-            model: Album,
-        },
-        {
-            model: Admin,
-            as: 'musicUploader',
+            model: Music,
+            as: 'songs',
+            include: [{
+                model: Genre,
+            },
+            {
+                model: Album,
+            },
+            {
+                model: Admin,
+                as: 'musicUploader',
+            }]
         }]
     })
-    .then(music => res.json(music))
+    .then(artists => res.json(artists))
     .catch(err => console.log(err))
 });
 
 // Get music by year{
 router.get('/year/:year', (req, res) => {
-    req.query.offset = req.query.offset ? Number(req.query.offset) : 0;
-    req.query.limit = req.query.limit ? Number(req.query.limit) : 50;
+    req.query.offset = req.query.offset ? Number(req.query.offset) : database.DEFAULT_OFFSET;
+    req.query.limit = req.query.limit ? Number(req.query.limit) : database.DEFAULT_LIMIT;
 
     Music.findAll({
         limit: req.query.limit,
@@ -140,18 +153,19 @@ router.get('/year/:year', (req, res) => {
 
 //Get all users and their comments for a song
 router.get('/comments/:id', (req, res) => {
-    req.query.offset = req.query.offset ? Number(req.query.offset) : 0;
-    req.query.limit = req.query.limit ? Number(req.query.limit) : 50;
+    req.query.offset = req.query.offset ? Number(req.query.offset) : database.DEFAULT_OFFSET;
+    req.query.limit = req.query.limit ? Number(req.query.limit) : database.DEFAULT_LIMIT;
 
     Music.findOne({
+        limit: req.query.limit,
+        offset: req.query.offset,
         where: {
             id: req.params.id
         },
         include: [{
             model: User,
             as: 'musicCommentUsers',
-            limit: req.query.limit,
-            offset: req.query.offset,
+            
         }],
     })
     .then(music => {

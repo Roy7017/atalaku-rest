@@ -5,10 +5,23 @@ const Op = database.Sequelize.Op;
 const User = require('../models/user');
 const Subscription = require('../models/subscription');
 
+const checkExpiry = (User) => {
+    expiryDate = new Date(User.expiryDate);
+    //currentDate = today.
+    const today = new Date();
+    if(today > expiryDate){
+        console.log('Expired');
+        return true;
+    }else{
+        console.log('not expired');
+        return false;
+    }
+};  
+
 //Read all users
 router.get('/', (req, res) => {
-    req.query.offset = req.query.offset ? Number(req.query.offset) : 0;
-    req.query.limit = req.query.limit ? Number(req.query.limit) : 50;
+    req.query.offset = req.query.offset ? Number(req.query.offset) : database.DEFAULT_OFFSET;
+    req.query.limit = req.query.limit ? Number(req.query.limit) : database.DEFAULT_LIMIT;
 
     User.findAll({
         offset: req.query.offset,
@@ -34,14 +47,17 @@ router.get('/:id', (req, res) => {
             model: Subscription,
         }]
     })
-    .then(user => res.json(user))
+    .then(user => {
+        user.dataValues.expired = checkExpiry(user);
+        res.json(user);
+    })
     .catch(err => console.log(err))
 });
 
 //Read users by name
 router.get('/name/:name', (req, res) => {
-    req.query.offset = req.query.offset ? Number(req.query.offset) : 0;
-    req.query.limit = req.query.limit ? Number(req.query.limit) : 50;
+    req.query.offset = req.query.offset ? Number(req.query.offset) : database.DEFAULT_OFFSET;
+    req.query.limit = req.query.limit ? Number(req.query.limit) : database.DEFAULT_LIMIT;
 
     User.findAll({
         limit: req.query.limit,

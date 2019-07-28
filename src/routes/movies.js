@@ -9,8 +9,8 @@ const Admin = require('../models/admin');
 
 //Get all movies
 router.get('/', (req, res) => {
-    req.query.offset = req.query.offset ? Number(req.query.offset) : 0;
-    req.query.limit = req.query.limit ? Number(req.query.limit) : 50;
+    req.query.offset = req.query.offset ? Number(req.query.offset) : database.DEFAULT_OFFSET;
+    req.query.limit = req.query.limit ? Number(req.query.limit) : database.DEFAULT_LIMIT;
 
     Movie.findAll({
         limit: req.query.limit,
@@ -48,8 +48,8 @@ router.get('/:id', (req, res) =>
 
 //Get movies by title
 router.get('/title/:title', (req, res) => {
-    req.query.offset = req.query.offset ? Number(req.query.offset) : 0;
-    req.query.limit = req.query.limit ? Number(req.query.limit) : 50;
+    req.query.offset = req.query.offset ? Number(req.query.offset) : database.DEFAULT_OFFSET;
+    req.query.limit = req.query.limit ? Number(req.query.limit) : database.DEFAULT_LIMIT;
 
     Movie.findAll({
         limit: req.query.limit,
@@ -74,8 +74,8 @@ router.get('/title/:title', (req, res) => {
 
 //Get movies by director
 router.get('/director/:director', (req, res) => {
-    req.query.offset = req.query.offset ? Number(req.query.offset) : 0;
-    req.query.limit = req.query.limit ? Number(req.query.limit) : 50;
+    req.query.offset = req.query.offset ? Number(req.query.offset) : database.DEFAULT_OFFSET;
+    req.query.limit = req.query.limit ? Number(req.query.limit) : database.DEFAULT_LIMIT;
 
     Movie.findAll({
         limit: req.query.limit,
@@ -100,8 +100,8 @@ router.get('/director/:director', (req, res) => {
 
 //Get movies by producer
 router.get('/producer/:producer', (req, res) => {
-    req.query.offset = req.query.offset ? Number(req.query.offset) : 0;
-    req.query.limit = req.query.limit ? Number(req.query.limit) : 50;
+    req.query.offset = req.query.offset ? Number(req.query.offset) : database.DEFAULT_OFFSET;
+    req.query.limit = req.query.limit ? Number(req.query.limit) : database.DEFAULT_LIMIT;
 
     Movie.findAll({
         limit: req.query.limit,
@@ -126,8 +126,8 @@ router.get('/producer/:producer', (req, res) => {
 
 //Get movies by writer
 router.get('/writer/:writer', (req, res) => {
-    req.query.offset = req.query.offset ? Number(req.query.offset) : 0;
-    req.query.limit = req.query.limit ? Number(req.query.limit) : 50;
+    req.query.offset = req.query.offset ? Number(req.query.offset) : database.DEFAULT_OFFSET;
+    req.query.limit = req.query.limit ? Number(req.query.limit) : database.DEFAULT_LIMIT;
 
     Movie.findAll({
         limit: req.query.limit,
@@ -152,8 +152,8 @@ router.get('/writer/:writer', (req, res) => {
 
 //Get movies by studio
 router.get('/studio/:studio', (req, res) => {
-    req.query.offset = req.query.offset ? Number(req.query.offset) : 0;
-    req.query.limit = req.query.limit ? Number(req.query.limit) : 50;
+    req.query.offset = req.query.offset ? Number(req.query.offset) : database.DEFAULT_OFFSET;
+    req.query.limit = req.query.limit ? Number(req.query.limit) : database.DEFAULT_LIMIT;
 
     Movie.findAll({
         limit: req.query.limit,
@@ -178,8 +178,8 @@ router.get('/studio/:studio', (req, res) => {
 
 //Get all reviews and users
 router.get('/reviews/:id', (req, res) => {
-    req.query.offset = req.query.offset ? Number(req.query.offset) : 0;
-    req.query.limit = req.query.limit ? Number(req.query.limit) : 50;
+    req.query.offset = req.query.offset ? Number(req.query.offset) : database.DEFAULT_OFFSET;
+    req.query.limit = req.query.limit ? Number(req.query.limit) : database.DEFAULT_LIMIT;
 
     Movie.findOne({
         where: {

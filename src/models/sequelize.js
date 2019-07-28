@@ -21,6 +21,9 @@ const Genre = require('./genre');
 const Admin = require('./admin');
 const Album = require('./album');
 const Documentary = require('./documentary');
+const Artist = require('./artist');
+const MusicArtist = require('./musicArtist');
+const VideoArtist = require('./videoArtist');
 
 
 //CREATING ASSOCIATIONS
@@ -34,6 +37,15 @@ Music.belongsTo(Album);
 Album.hasMany(MusicVideo, { as: 'videos'});
 MusicVideo.belongsTo(Album);
 
+Artist.hasMany(Music, { as: 'songs'});
+Music.belongsTo(Artist);
+
+Artist.hasMany(MusicVideo, { as: 'videos'});
+MusicVideo.belongsTo(Artist);
+
+Artist.hasMany(Album, {as: 'albums'});
+Album.belongsTo(Artist);
+
 //ONE TO ONE associations
 MusicVideo.belongsTo(Genre);
 MusicVideo.belongsTo(Admin, { as: 'videoUploader'})
@@ -45,7 +57,6 @@ Movie.belongsTo(Genre);
 Movie.belongsTo(Admin, { as: 'movieUploader'});
 
 Documentary.belongsTo(Admin, { as: 'documentaryUploader'});
-
 
 //Many-to-many : intermediate tables are used
 User.belongsToMany(Music, {through: MusicLike, as: {singular: 'musicLike', plural: 'musicLikes'}});
@@ -69,6 +80,11 @@ BlogPost.belongsToMany(User, {through: BlogPostLike, as: {singular: 'blogLikeUse
 User.belongsToMany(BlogPost, {through: BlogPostComment, as: {singular: 'blogPostComment', plural: 'blogPostComments'}});
 BlogPost.belongsToMany(User, {through: BlogPostComment, as: {singular: 'blogCommentUser', plural: 'blogCommentUsers'}});
 
+Music.belongsToMany(Artist, {as: 'featuredArtists', through : MusicArtist});
+Artist.belongsToMany(Music, {as : 'featuredSongs', through: MusicArtist});
+
+MusicVideo.belongsToMany(Artist, {as: 'featuredArtists', through: VideoArtist});
+Artist.belongsToMany(MusicVideo, {as : 'featuredVideos', through: VideoArtist});
 
 sequelize.sync({force: true}).then(() => {
     initialize();
@@ -96,9 +112,24 @@ const initialize = async function() {
         type: 'Movie',
     });
 
+    let mrLeo = Artist.build({
+        name: 'Mr Leo'
+    });
+
+    let locko = Artist.build({
+        name: 'Locko'
+    });
+    
+    let rickRoss = Artist.build({
+        name: 'Rick Ross'
+    });
+
     await admin.save();
     await musicGenre.save();
     await movieGenre.save();
+    await mrLeo.save();
+    await locko.save();
+    await rickRoss.save();
     
     for (let i = 0; i < 5; i++) {
 
@@ -134,22 +165,18 @@ const initialize = async function() {
 
         let music = Music.build({
             title: 'title' + i,
-            artist: "Mr leo, Locko",
-            album_artist: 'artist' + i,
             year: '201' + i,
             disc_num: 1
         });
 
         let musicVid = MusicVideo.build({
             title: 'title' + i,
-            artist: 'artist' + i,
             year: '201' + i,
             disc_num: 1
         });
 
         let album = Album.build({
             name: 'Album' + i,
-            artist: 'Artist' + i,
             year: '201' + i,
             thumbnail_url: "http://localhost:4200/assets/images/mboko.jpeg",
         });
@@ -177,19 +204,19 @@ const initialize = async function() {
             usr.addBlogPostLike(post);
             usr.addBlogPostComment(post, {through: {commment: 'nice'}});
             usr.addMusicLike(music).then(musicLikes => {
-                musicLikes.forEach((musicLike, i) => 
+                musicLikes.forEach((musicLike, j) => 
                     Music.findOne({
                         where: {
                             id: musicLike.dataValues.musicId
                         }
                     })
-                    .then(music => music.increment('likes', {by: 1}))
+                    .then(music => music.increment('likes', {by: i}))
                 );
             });
             usr.addMusicComment(music, {through: {comment: 'Nice song'}});
             usr.addVideoLike(musicVid)
                 .then(videoLikes => {
-                    videoLikes.forEach((videoLike, i) => 
+                    videoLikes.forEach((videoLike, j) => 
                         MusicVideo.findOne({
                             where: {
                                 id: videoLike.dataValues.musicVideoId
@@ -203,15 +230,21 @@ const initialize = async function() {
 
             album.addSong(music);
             album.addVideo(musicVid);
+            album.setArtist(mrLeo);
 
             movie.setMovieUploader(admin);
             movie.setGenre(movieGenre);
 
             music.setMusicUploader(admin);
             music.setGenre(musicGenre);
+            music.setArtist(mrLeo);
+            music.setFeaturedArtists([locko, rickRoss]);
 
             musicVid.setVideoUploader(admin);
             musicVid.setGenre(musicGenre);
+            musicVid.setArtist(mrLeo);
+            musicVid.setFeaturedArtists([locko, rickRoss]);
+            console.log(i);
         //ENDSUBREGION
 
     }
