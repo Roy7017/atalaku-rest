@@ -45,5 +45,41 @@ router.get('/username/:username', (req, res) => {
     .then(admins => res.json(admins))
     .catch(err => console.log(err));
 });
+//Create an admin
+router.post('/', (req, res) => {
+    let { username, email, password, phone, permissions } = req.body;
+
+    Admin.create({
+        username, email, password, phone, permissions
+    })
+    .then(admin => res.json(admin))
+    .catch(err => console.log(err));
+});
+// Update an admin
+router.put('/:id', (req, res) => {
+    let { username, email, password, phone, permissions } = req.body;
+
+    Admin.update({
+        username, email, password, phone, permissions
+    },
+    {
+        where : {
+            id: req.params.id
+        }
+    })
+    .then(admin => res.json(admin))
+    .catch(err => {console.error(err); res.status(401).jsonp(err)});
+});
+// Update an admin
+router.delete('/:id', (req, res) => {
+
+    Admin.destroy({
+        where : {
+            id: req.params.id
+        }
+    })
+    .then(admin => res.json(admin))
+    .catch(err => {console.error(err); res.status(401).jsonp(err)});
+});
 
 module.exports = router;

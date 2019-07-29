@@ -105,6 +105,7 @@ router.post('/', (req, res) => {
 
 //Updating a user
 router.put('/:id', (req, res) => {
+    console.log('I am about to update this mother....');
 
     // Extracting user variables from request
     let {username, password, tel, email, country, expiryDate} = req.body;
@@ -139,5 +140,6 @@ router.delete('/:id', (req, res) =>
     .then(user => res.json(user))
     .catch(err => console.log(err))
 );
+
 
 module.exports = router;

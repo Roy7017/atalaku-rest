@@ -18,6 +18,7 @@ Admin.init({
         type: Sequelize.STRING,
         unique: true,
     },
+    phone: Sequelize.STRING,
     permissions: Sequelize.STRING
 },
 {

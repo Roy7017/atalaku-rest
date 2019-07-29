@@ -83,6 +83,19 @@ const initialize = async function() {
     let admin = Admin.build({
         username: 'root',
         password: 'root',
+        phone: '0000',
+        email: 'root@atalaku.cm',
+        permissions: JSON.stringify({
+            addStaff: true,
+            updateStaff: true,
+            deleteStaff: true,
+            addMusic: true,
+            updateMusic: true,
+            deleteMusic: true,
+            addMovies: true,
+            updateMovies: true,
+            deleteMovies: true,
+          })
     });
 
 
@@ -116,7 +129,7 @@ const initialize = async function() {
             tel: 650990800 + i,
             email: 'user' + i + '@prampi.com',
             country: 'CM',
-            expiryDate: new Date('2019-05-' + (1 + i))
+            expiryDate: new Date('2019-08-' + (1 + i))
         });
 
         let movie = Movie.build({
