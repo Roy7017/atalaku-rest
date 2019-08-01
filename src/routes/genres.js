@@ -59,7 +59,7 @@ router.post('/', (req, res) => {
 
     Genre.create({
         name, type
-    })
+})
     .then(genre => res.json(genre))
     .catch(err => console.log(err));
 });

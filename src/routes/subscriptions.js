@@ -44,4 +44,16 @@ router.get('/name/:name', (req, res) =>
     .catch(err => console.log(err))
 );
 
+router.post('/', (req, res) => {
+    const {frequency, plan, amount} = req.query;
+
+    Subscription.create({
+        frequency,
+        plan,
+        amount
+    })
+    .then(subscription => res.json(subscription))
+    .catch(err => console.log(err));
+});
+
 module.exports = router;

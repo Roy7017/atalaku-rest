@@ -5,11 +5,12 @@ const Op = database.Sequelize.Op;
 const Album = require('../models/album');
 const Music = require('../models/music');
 const MusicVideo = require('../models/musicVideo');
+const Artist = require('../models/artist');
 
 //Get all albums
 router.get('/', (req, res) => {
-    req.query.offset = req.query.offset ? Number(req.query.offset) : 0;
-    req.query.limit = req.query.limit ? Number(req.query.limit) : 50;
+    req.query.offset = req.query.offset ? Number(req.query.offset) : database.DEFAULT_OFFSET;
+    req.query.limit = req.query.limit ? Number(req.query.limit) : database.DEFAULT_LIMIT;
 
     Album.findAll({
         limit: req.query.limit,
@@ -21,8 +22,8 @@ router.get('/', (req, res) => {
 
 //Get album by id
 router.get('/:id', (req, res) => {
-    req.query.offset = req.query.offset ? Number(req.query.offset) : 0;
-    req.query.limit = req.query.limit ? Number(req.query.limit) : 50;
+    req.query.offset = req.query.offset ? Number(req.query.offset) : database.DEFAULT_OFFSET;
+    req.query.limit = req.query.limit ? Number(req.query.limit) : database.DEFAULT_LIMIT;
 
     Album.findOne({
         where: {
@@ -47,8 +48,8 @@ router.get('/:id', (req, res) => {
 
 //Get album by name
 router.get('/name/:name', (req, res) => {
-    req.query.offset = req.query.offset ? Number(req.query.offset) : 0;
-    req.query.limit = req.query.limit ? Number(req.query.limit) : 50;
+    req.query.offset = req.query.offset ? Number(req.query.offset) : database.DEFAULT_OFFSET;
+    req.query.limit = req.query.limit ? Number(req.query.limit) : database.DEFAULT_LIMIT;
 
     Album.findAll({
         where: {
@@ -75,36 +76,40 @@ router.get('/name/:name', (req, res) => {
 
 //Get album by artist
 router.get('/artist/:artist', (req, res) => {
-    req.query.offset = req.query.offset ? Number(req.query.offset) : 0;
-    req.query.limit = req.query.limit ? Number(req.query.limit) : 50;
+    req.query.offset = req.query.offset ? Number(req.query.offset) : database.DEFAULT_OFFSET;
+    req.query.limit = req.query.limit ? Number(req.query.limit) : database.DEFAULT_LIMIT;
 
-    Album.findAll({
+    Artist.findAll({
         where: {
-            artist: {
+            name: {
                 [Op.like] : '%'+req.params.artist+'%'
             }
         },
         include: [{
-            model: Music,
-            as: 'songs',
-            limit: req.query.limit,
-            offset: req.query.offset,
-        },
-        {
-            model: MusicVideo,
-            as: 'videos',
-            limit: req.query.limit,
-            offset: req.query.offset,
+            model: Album,
+            as: 'albums',
+            include: [{
+                model: Music,
+                as: 'songs',
+                limit: req.query.limit,
+                offset: req.query.offset,
+            },
+            {
+                model: MusicVideo,
+                as: 'videos',
+                limit: req.query.limit,
+                offset: req.query.offset,
+            }]
         }]
     })
-    .then(albums => res.json(albums))
+    .then(artists => res.json(artists))
     .catch(err => console.log(err));
 });
 
 //Get album by year
 router.get('/year/:year', (req, res) => {
-    req.query.offset = req.query.offset ? Number(req.query.offset) : 0;
-    req.query.limit = req.query.limit ? Number(req.query.limit) : 50;
+    req.query.offset = req.query.offset ? Number(req.query.offset) : database.DEFAULT_OFFSET;
+    req.query.limit = req.query.limit ? Number(req.query.limit) : database.DEFAULT_LIMIT;
 
     Album.findAll({
         where: {
@@ -126,6 +131,18 @@ router.get('/year/:year', (req, res) => {
         }]
     })
     .then(albums => res.json(albums))
+    .catch(err => console.log(err));
+});
+
+router.post('/', (req, res) => {
+    const {name, year, thumbnail_url} = req.query;
+
+    Album.create({
+        name,
+        year,
+        thumbnail_url
+    })
+    .then(album => res.json(album))
     .catch(err => console.log(err));
 });
 

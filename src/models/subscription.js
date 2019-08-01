@@ -15,7 +15,8 @@ Subscripition.init({
     },
     plan: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
+        unique: true
     },
     amount: {
         type: Sequelize.DOUBLE,

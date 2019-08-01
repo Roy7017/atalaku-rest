@@ -11,10 +11,6 @@ Album.init({
         unique: true,
         allowNull: false,
     },
-    artist: {
-        type: Sequelize.STRING,
-        allowNull: false,
-    }, 
     year: {
         type: Sequelize.STRING,
         allowNull: false,

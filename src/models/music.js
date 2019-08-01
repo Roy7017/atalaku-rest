@@ -9,10 +9,6 @@ Music.init({
         type: Sequelize.STRING,
         allowNull: false
     },
-    artist: {
-        type: Sequelize.STRING,
-        allowNull: false
-    },
     year: {
         type: Sequelize.STRING,
         validate: {

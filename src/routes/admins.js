@@ -6,8 +6,8 @@ const Admin = require('../models/admin');
 
 //Get all admins
 router.get('/', (req, res) => {
-    req.query.offset = req.query.offset ? Number(req.query.offset) : 0;
-    req.query.limit = req.query.limit ? Number(req.query.limit) : 50;
+    req.query.offset = req.query.offset ? Number(req.query.offset) : database.DEFAULT_OFFSET;
+    req.query.limit = req.query.limit ? Number(req.query.limit) : database.DEFAULT_LIMIT;
     
     Admin.findAll({
         limit: req.query.limit,
@@ -30,8 +30,8 @@ router.get('/:id', (req, res) => {
 
 //Get admin by username
 router.get('/username/:username', (req, res) => {
-    req.query.offset = req.query.offset ? Number(req.query.offset) : 0;
-    req.query.limit = req.query.limit ? Number(req.query.limit) : 50;
+    req.query.offset = req.query.offset ? Number(req.query.offset) : database.DEFAULT_OFFSET;
+    req.query.limit = req.query.limit ? Number(req.query.limit) : database.DEFAULT_LIMIT;
 
     Admin.findAll({
         limit: req.query.limit,
@@ -80,6 +80,19 @@ router.delete('/:id', (req, res) => {
     })
     .then(admin => res.json(admin))
     .catch(err => {console.error(err); res.status(401).jsonp(err)});
+});
+
+router.post('/', (req, res) => {
+    const {username, password, email, permissions} = req.query;
+
+    Admin.create({
+        username, 
+        password,
+        email,
+        permissions
+    })
+    .then(admin => res.json(admin))
+    .catch(err = console.log(err));
 });
 
 module.exports = router;
