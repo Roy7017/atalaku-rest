@@ -23,6 +23,18 @@ router.get('/:name', (req, res) =>
     .then(genres => res.json(genres))
     .catch(err => console.log(err))
 );
+//Get genre by type
+router.get('/type/:type', (req, res) =>
+    Genre.findAll({
+        where: {
+            type: {
+                [Op.like] : '%'+req.params.type+'%'
+            }
+        }
+    })
+    .then(genres => res.json(genres))
+    .catch(err => console.log(err))
+);
 
 //Update a genre
 router.put('/:id', (req, res) => {
@@ -43,17 +55,18 @@ router.put('/:id', (req, res) => {
 
 //Create a genre
 router.post('/', (req, res) => {
-    let { name } = req.body;
+    let { name, type } = req.body;
 
     Genre.create({
-        name
+        name, type
     })
     .then(genre => res.json(genre))
     .catch(err => console.log(err));
 });
 
 //Delete a genre
-router.delete('/:id', (req, res) => 
+router.delete('/:id', (req, res) => {
+    console.log(req.param.id)
     Genre.destroy({
         where: {
             id: req.param.id
@@ -61,7 +74,7 @@ router.delete('/:id', (req, res) =>
     })
     .then(genre => res.json(genre))
     .catch(err => console.log(err))
-);
+});
 
 
 module.exports = router;

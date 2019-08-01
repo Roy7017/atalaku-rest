@@ -101,12 +101,12 @@ const initialize = async function() {
 
     let musicGenre = Genre.build({
         name: 'Hip-Hop',
-        type: 'Music',
+        type: 'music',
     });
 
     let movieGenre = Genre.build({
         name: 'Adventure',
-        type: 'Movie',
+        type: 'movie',
     });
 
     await admin.save();
